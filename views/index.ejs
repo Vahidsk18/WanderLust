@@ -1,0 +1,22 @@
+<% layout('layouts/boilerplate') -%>
+    <body>
+        <h6>
+            <%= lists.length %>
+        </h6>
+        <div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-1">
+            <% lists.forEach(list=> { %>
+                <a href="/viewlist/<%= list._id %>" class="listing-link">
+                <div class="card col">
+                    <img src="<%=list.image  %>" class="card-img-top" alt="Listing-Img" style="height:20rem ;">
+                    <div class="card-img-overlay"></div>
+                    <div class="card-body">
+                        <p class="card-text">
+                           <b> <%= list.title %></b> <br>
+                                &#8377;<%= list.price.toLocaleString('en-IN')%> / night
+                        </p>
+                    </div>
+                </div>
+                </a>
+                <% }) %>
+        </div>
+    </body>
