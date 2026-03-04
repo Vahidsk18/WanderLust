@@ -9,9 +9,8 @@ const listingSchema = new mongoose.Schema({
         type: String,
     },
     image: {
-        type: String,
-        default:'https://media.istockphoto.com/id/1454842745/photo/tourism.jpg?s=612x612&w=is&k=20&c=M-3TtEilagZ-s2s-tRO6VQE2F5RiAZcK199UHYSNd5s=',
-        set: (v) => v === "" ? "https://media.istockphoto.com/id/1454842745/photo/tourism.jpg?s=612x612&w=is&k=20&c=M-3TtEilagZ-s2s-tRO6VQE2F5RiAZcK199UHYSNd5s=" : v,
+        url: String,
+        filename: String
     },
     price: {
         type: Number,
@@ -22,7 +21,40 @@ const listingSchema = new mongoose.Schema({
     country: {
         type: String,
     },
+    reviews: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Review',
+        }
+    ],
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
+    geometry: {
+        type: {
+            type: String, // Don't do `{ location: { type: String } }`
+            enum: ['Point'], // 'location.type' must be 'Point'
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
+    }
 })
+
+
+//deleting reviews for list
+listingSchema.post('findOneAndDelete', async (list) => {
+    if (list) {
+        await mongoose.model('Review').deleteMany({
+            _id: { $in: list.reviews }
+        });
+    }
+})
+
+
 
 const Listing = mongoose.model('listing', listingSchema)
 

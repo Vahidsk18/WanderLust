@@ -1,0 +1,197 @@
+<% layout('layouts/boilerplate') -%>
+
+<script>
+    let mapToken ='<%= process.env.MAP_TOKEN %>'
+    let list = <%- JSON.stringify(list) %>
+</script>
+
+<div class="container" style="max-width: 900px; margin: 60px auto; font-family: 'Plus Jakarta Sans', sans-serif;">
+
+    <!-- ================= LISTING DETAILS ================= -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
+
+        <!-- Image -->
+        <img src="<%= list.image.url %>" 
+             class="card-img-top" 
+             style="height: 350px; object-fit: cover;"
+             alt="Listing Image">
+
+        <div class="card-body p-4">
+            <h6 class="fw-semibold mb-2"><%= list.owner.username %></h6>
+            <h4 class="fw-semibold mb-2"><%= list.title %></h4>
+
+            <p class="text-muted mb-3"><%= list.description %></p>
+
+            <h5 class="fw-bold mb-3 text-danger">
+                ₹ <%= list.price.toLocaleString('en-IN') %>
+            </h5>
+
+            <p class="mb-1"><strong>Location:</strong> <%= list.location %></p>
+            <p class="text-muted"><%= list.country %></p>
+
+            <!-- Buttons -->
+             <% if (currUser && currUser._id.equals(list.owner._id)) { %>
+               <div class="d-flex gap-3 mt-4">
+                <a href="/editlist/<%= list._id %>" 
+                   class="btn btn-danger px-4 rounded-3">
+                   Edit
+                </a>
+
+                <form action="/deletelist/<%= list._id %>?_method=DELETE" method="POST">
+                    <button class="btn btn-dark px-4 rounded-3">
+                        Delete
+                    </button>
+                </form>
+            </div>
+             <% } %>
+        </div>
+    </div>
+
+
+   <!-- ================= REVIEW SECTION ================= -->
+
+<!-- ================= REVIEW FORM ================= -->
+<% if (userLoggedIn) { %>
+
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-5">
+        <h4 class="fw-semibold mb-4">Leave a Review</h4>
+
+        <form action="/list/<%= list._id %>/reviews" method="POST" novalidate class="needs-validation">
+
+            <!-- Star Rating -->
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Rating</label>
+                <div class="star-rating">
+
+                    <% for(let i=5; i>=1; i--) { %>
+                        <input type="radio" 
+                               name="rating" 
+                               value="<%= i %>" 
+                               id="star<%= i %>" 
+                               required>
+                        <label for="star<%= i %>">★</label>
+                    <% } %>
+
+                </div>
+            </div>
+
+            <!-- Comment -->
+            <div class="mb-4">
+                <label for="comment" class="form-label fw-semibold">Comment</label>
+                <textarea 
+                    name="comment" 
+                    id="comment" 
+                    rows="4"
+                    class="form-control rounded-3"
+                    placeholder="Write your experience here..."
+                    required>
+                </textarea>
+
+                <div class="invalid-feedback">
+                    Please add some comments for review
+                </div>
+            </div>
+
+            <div class="text-end">
+                <button type="submit" 
+                        class="btn btn-danger px-4 rounded-3">
+                        Submit Review
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+<% } else { %>
+
+    <!-- Optional login message -->
+    <div class="alert alert-warning rounded-4 text-center mb-4">
+        Please login to write a review.
+    </div>
+
+<% } %>
+
+
+<!-- ================= REVIEWS LIST (Always Visible) ================= -->
+
+<div class="mt-5">
+    <h3 class="fw-semibold mb-4">Guest Reviews</h3>
+
+    <% if (!list.reviews || list.reviews.length === 0) { %>
+
+        <div class="alert alert-light border rounded-4 text-center">
+            <h5 class="text-muted mb-0">No Reviews Yet</h5>
+        </div>
+
+    <% } else { %>
+
+       <% list.reviews.forEach(review => { %>
+
+    <div class="review-card mb-4 p-4 rounded-4 shadow-sm">
+
+        <!-- Top Section -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+                
+            <!-- ⭐ Star Rating -->
+            <div class="stars text-warning fs-5">
+                <% for(let i = 0; i < review.rating; i++) { %>
+                    ★
+                <% } %>
+                <% for(let i = review.rating; i < 5; i++) { %>
+                    ☆
+                <% } %>
+            </div>
+
+            <!-- 📅 Date -->
+            <small class="text-muted">
+                <%= new Date(review.createdAt).toLocaleDateString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                }) %>
+            </small>
+        </div>
+
+        <!-- 👤 Username -->
+        <p class="fw-bold mb-1 text-primary">
+            <% if(review.author) { %>
+                @<%= review.author.username %>
+            <% } else { %>
+                Anonymous User
+            <% } %>
+        </p>
+
+        <!-- 💬 Comment -->
+        <p class="review-comment mb-3">
+            <%= review.comment %>
+        </p>
+
+        <!-- ❌ Delete Button (Only Owner) -->
+        <% if (userLoggedIn && review.author && review.author._id.equals(currUser._id)) { %>
+
+            <form action="/list/<%= list._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+                <button class="btn btn-sm btn-outline-danger rounded-3">
+                    Delete Review
+                </button>
+            </form>
+
+        <% } %>
+
+    </div>
+
+<% }) %>
+
+    <% } %>
+</div>
+
+
+<!-- ================= MAP SECTION ================= -->
+<div class="mt-12 mb-16 text-center">
+    <h3 class="text-2xl font-semibold mb-6">Where you'll be</h3>
+    <div id="map"></div>
+</div>
+
+
+<script src="/js/mapScript.js"></script>
+
+

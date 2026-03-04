@@ -30,17 +30,21 @@ body {
     text-decoration: underline;
 }
 
-.f-info-links ,.f-info-socials,.f-info-brand{
+.f-info-links,
+.f-info-socials,
+.f-info-brand {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.f-info-socials i{
+
+.f-info-socials i {
     font-size: 1.2rem;
     margin-right: 1rem;
     color: #222222;
 }
+
 .f-info {
     height: 8rem;
     background-color: rgba(205, 213, 218, 0.651);
@@ -52,35 +56,41 @@ body {
 }
 
 /* cards */
-.card{
+.card {
     border: none !important;
     margin-bottom: 2rem;
 
 
 }
-.card-img-top{
+
+.card-img-top {
     border-radius: 1rem !important;
     width: 100% !important;
-    object-fit: cover !important;
+    background-size: cover !important;
+    /* object-fit: cover !important; */
 }
-.card-body{
+
+.card-body {
     padding: 0 !important;
 }
-.card-text-p{
-    font-weight:480 !important ;
+
+.card-text-p {
+    font-weight: 480 !important;
 }
-.listing-link{
+
+.listing-link {
     text-decoration: none;
 
 }
 
 /* card effect */
-.card-img-overlay{
-  opacity: 0;  
+.card-img-overlay {
+    opacity: 0;
 }
-.card-img-overlay:hover{
-  opacity: 0.2;  
-  background-color: rgb(221, 205, 205);
+
+.card-img-overlay:hover {
+    opacity: 0.2;
+    background-color: rgb(221, 205, 205);
 }
 
 /* createlist */
@@ -88,6 +98,53 @@ body {
     max-width: 700px;
     margin: 20px auto;
 }
+
 /* .container{
     flex:1
 } */
+
+
+/* <!-- ================= STAR RATING CSS ================= --> */
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: start;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 28px;
+    color: #ccc;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.star-rating input:checked~label,
+.star-rating label:hover,
+.star-rating label:hover~label {
+    color: #ffc107;
+}
+
+
+/* //for map  */
+#map {
+    width: 85%;
+    height: 350px;
+    border-radius: 12px;
+    margin: 0 auto;   /* This centers it */
+    display: block;   /* Ensures proper layout */
+}
+
+@media (max-width: 991px) {
+  .navbar-collapse {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  }
+}

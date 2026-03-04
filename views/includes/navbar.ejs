@@ -1,15 +1,96 @@
-<nav class="navbar navbar-expand-lg bg-body-light border-bottom sticky-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/"><i class="fa-solid fa-compass"></i></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+<style>
+  .nav-search {
+    max-width: 380px;   /* increased width */
+    width: 100%;
+  }
+
+  .search-input {
+    height: 40px;          /* medium height */
+    font-size: 0.95rem;
+    border-radius: 25px;
+    padding: 0 15px;
+  }
+
+  .btn-search {
+    height: 40px;
+    font-size: 0.9rem;
+    padding: 0 16px;
+    border-radius: 25px;
+    background-color: #fe424d;
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .btn-search:hover {
+    background-color: #e53945;
+    color: #fff;
+  }
+  .btn-search i {
+  color: white;
+  font-size: 14px;
+}
+
+  /* Better alignment on mobile */
+  @media (max-width: 992px) {
+    .nav-search {
+      max-width: 100%;
+      margin: 1rem 0;
+    }
+  }
+</style>
+
+<nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top shadow-sm">
+  <div class="container-fluid px-3">
+
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="/listings">
+      <i class="fa-solid fa-compass text-danger fs-4"></i>
+      <span class="d-lg-none fs-5">WanderLust</span>
+    </a>
+
+    <!-- Hamburger -->
+    <button class="navbar-toggler border-0 shadow-none" 
+            type="button" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#navbarNavAltMarkup">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link active" aria-current="page" href="/">Home</a>
-        <a class="nav-link" href="/listings">All Listings</a>
-        <a class="nav-link" href="/listing/new">Add new Listing</a>
+
+      <!-- Left Links -->
+      <div class="navbar-nav ms-lg-4">
+        <a class="nav-link fw-semibold" href="/listings">Explore</a>
       </div>
+
+      <!-- 🔥 CENTER SEARCH -->
+      <!-- 🔥 CENTER SEARCH -->
+        <div class="nav-search mx-lg-auto">
+          <form class="d-flex align-items-center" role="search">
+            <input class="form-control search-input me-2" 
+                  type="search" 
+                  placeholder="Search Destination" 
+                  aria-label="Search">
+            <button class="btn btn-search" type="submit">
+              <i class="fa-solid fa-magnifying-glass fa-sm"></i>
+            </button>
+          </form>
+        </div>
+
+      <!-- Right Links -->
+      <div class="navbar-nav ms-lg-auto mt-3 mt-lg-0">
+        <a class="nav-link fw-semibold" href="/listing/new">Airbnb your home</a>
+
+        <% if (!currUser) { %>
+          <a class="nav-link fw-semibold" href="/signup"><b>Sign Up</b></a>
+          <a class="nav-link fw-semibold" href="/login"><b>Login</b></a>
+        <% } %>
+
+        <% if (currUser) { %>
+          <a class="nav-link fw-semibold text-danger" href="/logout">Logout</a>
+        <% } %>
+      </div>
+
     </div>
   </div>
 </nav>

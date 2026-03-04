@@ -1,0 +1,110 @@
+<% layout('layouts/boilerplate') -%>
+
+<div class="container" style="max-width: 700px; margin: 60px auto; font-family: 'Plus Jakarta Sans', sans-serif;">
+
+    <h2 class="mb-4 fw-semibold">Edit Listing</h2>
+
+    <form action="/edit/list/<%= list._id %>?_method=PUT" method="post"  class=" needs-validation" novalidate enctype="multipart/form-data" >
+
+        <!-- Title -->
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input 
+                type="text" 
+                class="form-control" 
+                name="title" 
+                id="title" 
+                value="<%= list.title %>" 
+                required>
+                <div class="valid-feedback">
+                Looks good!
+                </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea 
+                class="form-control" 
+                name="description" 
+                id="description" 
+                rows="3" required><%= list.description %></textarea>
+                <div class="valid-feedback">
+                Looks good!
+            </div>
+        </div>
+
+        <!-- Image URL -->
+       <div class="mb-3">
+            <label class="form-label">Current Image</label><br>
+    
+            <% if(list.image && list.image.url) { %>
+                <img src="<%= originalImageUrl %>" 
+                alt="Current Image" 
+                style="width:200px; height:auto; border-radius:10px;">
+            <% } %>
+        </div>
+
+        <div class="mb-3">
+            <label for="image" class="form-label">Upload New Image</label>
+            <input type="file" 
+                class="form-control" 
+                name="image" 
+                id="image">
+        </div>
+
+        <!-- Price & Country Row -->
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    name="price" 
+                    id="price" 
+                    required
+                    value="<%= list.price %>">
+                    <div class="invalid-feedback">
+                    Please Enter the Price.
+                    </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="country" class="form-label">Country</label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    name="country" 
+                    id="country" 
+                    required
+                    value="<%= list.country %>">
+                    <div class="invalid-feedback">
+                     Enter the Country.
+                </div>
+            </div>
+        </div>
+
+        <!-- Location -->
+        <div class="mb-4">
+            <label for="location" class="form-label">Location</label>
+            <input 
+                type="text" 
+                class="form-control" 
+                name="location" 
+                id="location" 
+                required
+                value="<%= list.location %>">
+                <div class="invalid-feedback">
+                     Enter the Locaton.
+                </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-dark px-4">Update</button>
+            <a href="/listings" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+
+    </form>
+
+</div>

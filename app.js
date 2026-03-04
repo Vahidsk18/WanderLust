@@ -1,10 +1,19 @@
+require('dotenv').config()
+
 const express = require('express')
 const path = require('path')
 const app = express()
 const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
+const session = require('express-session')
+const MongoStore = require('connect-mongo')
+const flash = require('connect-flash')
+const cookieParser = require('cookie-parser')
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy;
 
 
+//middlewares
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')))
@@ -12,61 +21,83 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'))
 app.engine('ejs', ejsMate);
+app.use(cookieParser());
 
 const { MongoDB } = require('./config')
-const Listing = require('./models/listing')
+const ExpressError = require('./utils/ExpressError')
+const listingsRoute = require('./routes/list')
+const reviewRoute = require('./routes/review')
+const userRoute = require('./routes/userRoute')
+const User = require('./models/user')
 
 //DB 
 MongoDB().then(() => console.log("Db connected"))
     .catch(err => console.log(err));
 
 
-app.get('/', (req, res) => {
-    res.send("Done!!!!!")
+const store = MongoStore.create({
+    mongoUrl: process.env.MongoUrl,
+    crypto: {
+        secret: process.env.SESSION_SECRET,
+    },
+    touchAfter: 24 * 3600
 })
 
-//get all
-app.get('/listings', async (req, res) => {
-    let lists = await Listing.find({})
-    res.render('index', { lists })
-})
-//get single list
-app.get('/viewlist/:id', async (req, res) => {
-    const id = req.params.id;
-    let list = await Listing.findById(id);
-    res.render('list', { list })
+store.on("error",(err)=>{
+    console.log("error in mongo store",err)
 })
 
-//create list
-app.get('/listing/new', (req, res) => {
-    res.render('createlist')
-})
-app.post('/create/new/list', async (req, res) => {
-    const { title, description, image, price, location, country } = req.body;
-    let list = await Listing.create({ title, description, image, price, location, country });
-    res.redirect('/listings');
-})
+const sessionOptions = {
+    store: store,
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+    }
+}
 
-//edit & update
-app.get('/editlist/:id', async (req, res) => {
-    const id = req.params.id;
-    let list = await Listing.findById(id);
-    res.render('updatelist', { list })
-})
-app.put('/edit/list/:id', async (req, res) => {
-    const id = req.params.id;
-    const { title, description, image, price, location, country } = req.body;
-    let list = await Listing.findByIdAndUpdate(id, { title, description, image, price, location, country }, { new: true });
-    res.redirect(`/viewlist/${id}`);
-})
+//for session
+app.use(session(sessionOptions))
+app.use(flash());
 
-app.get('/deletelist/:id', async (req, res) => {
-    const id = req.params.id;
-    let list = await Listing.findByIdAndDelete(id);
-    res.redirect('/listings');
+//for
+app.use(passport.initialize())
+app.use(passport.session())
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
+app.use((req, res, next) => {
+    res.locals.success = req.flash("success")
+    res.locals.error = req.flash("error")
+    res.locals.currUser = req.user
+    // console.log("Curruser",req.user)
+    next()
 })
 
 
+//routes
+app.use('/', listingsRoute)
+app.use('/', reviewRoute)
+app.use('/', userRoute)
+
+
+//for error handling middlewares
+app.use((req, res, next) => {
+    next(new ExpressError(404, "Page Not Found"));
+});
+
+app.use((err, req, res, next) => {
+    let { statusCode = 500, message = "Something went wrong" } = err;
+    // res.status(statusCode).send(message);
+
+    res.status(statusCode).render('error', { message })
+})
 
 app.listen(8000)
 
