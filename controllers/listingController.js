@@ -62,14 +62,16 @@ async function createList(req, res) {
 async function editList(req, res) {
     const { id } = req.params;
     const list = await Listing.findById(id);
-
-    let originalImageUrl = list.image.url;
-    originalImageUrl.replace('/uploads', '/uploads/h_200,w_250') //for low quality img 
-
+    
     if (!list) {
         req.flash("error", "List Not Found!")
         return res.redirect('/listings')
     }
+
+    let originalImageUrl = list.image.url;
+    originalImageUrl.replace('/uploads', '/uploads/h_200,w_250') //for low quality img 
+
+
     res.render('listings/updatelist', { list, originalImageUrl });
 }
 

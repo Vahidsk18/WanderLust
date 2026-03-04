@@ -1,5 +1,6 @@
 require('dotenv').config()
-
+console.log('MongoUrl from .env →', process.env.MongoUrl || 'MISSING / EMPTY!');
+console.log('SESSION_SECRET from .env →', process.env.SESSION_SECRET || 'MISSING!');
 const express = require('express')
 const path = require('path')
 const app = express()
@@ -43,8 +44,8 @@ const store = MongoStore.create({
     touchAfter: 24 * 3600
 })
 
-store.on("error",(err)=>{
-    console.log("error in mongo store",err)
+store.on("error", (err) => {
+    console.log("error in mongo store", err)
 })
 
 const sessionOptions = {
@@ -100,13 +101,10 @@ app.use((err, req, res, next) => {
 })
 
 
+const port = process.env.PORT || 8000;
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+})
 
-const port = process.env.PORT || 3000;
-
-if (process.env.NODE_ENV !== "production") {
-    app.listen(port, () => {
-        console.log(`Server running on port ${port}`);
-    });
-}
 
 module.exports = app;
