@@ -99,7 +99,14 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error', { message })
 })
 
-let PORT=process.env.PORT
-app.listen(PORT,()=>{
-    console.log(`running,${PORT}`);
-})
+
+
+const port = process.env.PORT || 3000;
+
+if (process.env.NODE_ENV !== "production") {
+    app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+    });
+}
+
+module.exports = app;
