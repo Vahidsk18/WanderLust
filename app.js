@@ -6,7 +6,7 @@ const app = express()
 const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
 const session = require('express-session')
-const MongoStore = require('connect-mongo')
+const { MongoStore } = require('connect-mongo');
 const flash = require('connect-flash')
 const cookieParser = require('cookie-parser')
 const passport = require('passport')
@@ -41,10 +41,10 @@ const store = MongoStore.create({
         secret: process.env.SESSION_SECRET,
     },
     touchAfter: 24 * 3600
-})
+});
 
-store.on("error", (err) => {
-    console.log("error in mongo store", err)
+store.on("error",(err)=>{
+    console.log("error in mongo store",err)
 })
 
 const sessionOptions = {
@@ -104,6 +104,3 @@ const port = process.env.PORT || 8000;
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 })
-
-
-module.exports = app;

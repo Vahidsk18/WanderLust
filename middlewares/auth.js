@@ -7,14 +7,15 @@ function isLoggedIn(req, res, next) {
         req.flash("error", "You Must Be Login!")
         return res.redirect('/login')
     }
-    next()
+    return next();
 }
 
 function saveRedirectUrl(req, res, next) {
     if (req.session.redirectUrl) {
-        res.locals.redirectUrl = req.session.redirectUrl
+        res.locals.redirectUrl = req.session.redirectUrl;
+        delete req.session.redirectUrl;   // ← clean up so it doesn't persist
     }
-    next()
+    next();
 }
 
 async function isOwnerForListing(req, res, next) {
