@@ -1,6 +1,5 @@
 require('dotenv').config()
-console.log('MongoUrl from .env →', process.env.MongoUrl || 'MISSING / EMPTY!');
-console.log('SESSION_SECRET from .env →', process.env.SESSION_SECRET || 'MISSING!');
+
 const express = require('express')
 const path = require('path')
 const app = express()
