@@ -9,7 +9,8 @@ const { isLoggedIn, isOwnerForListing } = require('../middlewares/auth')
 const { getAllList, getSingleList, createListForm, createList, editList, updateList, deleteList } = require('../controllers/listingController')
 const multer = require('multer')
 const { storage } = require('../cloudConfig')
-const upload = multer({ storage })
+const upload = multer({ storage, limits: { fileSize: 4 * 1024 * 1024 } // 4MB
+});
 
 // ================= VALIDATION =================
 
